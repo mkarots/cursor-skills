@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PR #{{N}} walkthrough — {{TITLE}}</title>
+  <style>
+    /* GitHub Primer light + Primer syntax. Do not restyle. */
+    :root {
+      --bg: #ffffff;
+      --canvas: #f6f8fa;
+      --inset: #eaeef2;
+      --border: #d0d7de;
+      --text: #1f2328;
+      --muted: #656d76;
+      --link: #0969da;
+      --accent: #0969da;
+      --done: #1a7f37;
+      --done-bg: #dafbe1;
+      --open: #0969da;
+      --open-bg: #ddf4ff;
+      --danger: #cf222e;
+      --danger-bg: #ffebe9;
+      --attention: #9a6700;
+      --attention-bg: #fff8c5;
+      --plus: #1a7f37;
+      --minus: #cf222e;
+      --code-bg: #f6f8fa;
+      --code-fg: #1f2328;
+      --code-gutter: #656d76;
+      --syn-k: #cf222e;
+      --syn-s: #0a3069;
+      --syn-c: #57606a;
+      --syn-f: #8250df;
+      --syn-t: #953800;
+      --syn-mi: #0550ae;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+      --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      font: 16px/1.5 var(--font);
+    }
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 920px);
+      gap: 2rem;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px 24px 80px;
+    }
+    nav {
+      position: sticky;
+      top: 24px;
+      align-self: start;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    nav .label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    nav a {
+      display: block;
+      color: var(--text);
+      padding: 5px 0;
+    }
+    nav a:hover { color: var(--link); }
+    header.hero {
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .kicker {
+      margin: 0 0 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+    }
+    h2 {
+      margin: 36px 0 10px;
+      font-size: 20px;
+      font-weight: 600;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    h3 { margin: 22px 0 8px; font-size: 16px; font-weight: 600; }
+    p { margin: 10px 0; }
+    .lede { color: var(--muted); font-size: 16px; }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .chip {
+      display: inline-block;
+      padding: 1px 8px;
+      border: 1px solid var(--border);
+      border-radius: 2em;
+      background: var(--canvas);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .chip.open { background: var(--open-bg); border-color: #54aeff; color: var(--open); }
+    .plus { color: var(--plus); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .minus { color: var(--minus); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .card {
+      background: var(--canvas);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 16px;
+      margin: 12px 0;
+    }
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .split3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .split .card h3, .split3 .card h3 { margin-top: 0; }
+    table.files {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin: 12px 0;
+    }
+    table.files th, table.files td {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    table.files th { color: var(--muted); font-weight: 600; font-size: 12px; }
+    table.files code { font-size: 12px; }
+    .note {
+      border-left: 3px solid var(--accent);
+      background: var(--open-bg);
+      padding: 10px 12px;
+      margin: 14px 0;
+      border-radius: 0 6px 6px 0;
+      font-size: 14px;
+    }
+    .note.warn {
+      border-left-color: var(--attention);
+      background: var(--attention-bg);
+    }
+    code, .path {
+      font-family: var(--mono);
+      font-size: 85%;
+    }
+    p code, li code, td code, .note code {
+      background: var(--canvas);
+      border: 1px solid var(--border);
+      padding: 0.1em 0.35em;
+      border-radius: 6px;
+    }
+    ol.steps { padding-left: 22px; }
+    ol.steps li { margin: 6px 0; }
+
+    /* Connections graph */
+    .graph {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: var(--canvas);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px;
+      overflow-x: auto;
+    }
+    .graph-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .node {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 13px;
+      min-width: 140px;
+    }
+    .node strong { display: block; font-size: 13px; }
+    .node span { color: var(--muted); font-size: 12px; }
+    .node.new { border-color: #4ac26b; background: var(--done-bg); }
+    .node.io { border-style: dashed; }
+    .edge {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 0 2px;
+    }
+
+    /* Code: GitHub file view */
+    figure.code {
+      margin: 14px 0 22px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--code-bg);
+    }
+    figure.code figcaption {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 12px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      font-family: var(--mono);
+    }
+    figure.code figcaption a { font-weight: 600; }
+    figure.code figcaption .aux { color: var(--muted); }
+    figure.code pre {
+      margin: 0;
+      overflow-x: auto;
+      font: 12px/20px var(--mono);
+      color: var(--code-fg);
+      background: var(--code-bg);
+      padding: 8px 0;
+    }
+    figure.code ol {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    figure.code li {
+      display: flex;
+      white-space: pre;
+    }
+    figure.code li .ln {
+      flex: 0 0 48px;
+      text-align: right;
+      padding: 0 12px 0 8px;
+      color: var(--code-gutter);
+      user-select: none;
+    }
+    figure.code li .src { flex: 1; padding-right: 16px; }
+    figure.code .k { color: var(--syn-k); }
+    figure.code .s { color: var(--syn-s); }
+    figure.code .c { color: var(--syn-c); }
+    figure.code .f { color: var(--syn-f); }
+    figure.code .t { color: var(--syn-t); }
+    figure.code .mi { color: var(--syn-mi); }
+    footer {
+      margin-top: 40px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    @media (max-width: 860px) {
+      .wrap { grid-template-columns: 1fr; padding: 16px 16px 48px; }
+      nav { position: static; }
+      .split, .split3 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav>
+      <span class="label">On this page</span>
+      <a href="#what">1. What changed</a>
+      <a href="#structure">2. Structure</a>
+      <a href="#connections">3. Connections</a>
+      <a href="#code">4. Key code</a>
+      <a href="#same">5. What stayed the same</a>
+      <a href="#verify">6. How to verify</a>
+    </nav>
+
+    <main>
+      <header class="hero">
+        <p class="kicker">Pull request walkthrough</p>
+        <h1>{{TITLE}}</h1>
+        <p class="lede">{{LEDE}}</p>
+        <div class="meta">
+          <span class="chip open">{{STATE}}</span>
+          <a href="{{PR_URL}}">#{{N}}</a>
+          <span>{{BASE}} ← {{HEAD}}</span>
+          <span class="plus">+{{ADDITIONS}}</span>
+          <span class="minus">−{{DELETIONS}}</span>
+          <span>{{FILES}} files</span>
+        </div>
+      </header>
+
+      <section id="what">
+        <h2>1. What changed</h2>
+        {{WHAT}}
+      </section>
+
+      <section id="structure">
+        <h2>2. Structure</h2>
+        {{STRUCTURE}}
+      </section>
+
+      <section id="connections">
+        <h2>3. Connections</h2>
+        <p>{{CONNECTIONS_INTRO}}</p>
+        <div class="graph">
+          {{GRAPH}}
+        </div>
+        {{CONNECTIONS_NOTES}}
+      </section>
+
+      <section id="code">
+        <h2>4. Key code</h2>
+        {{CODE}}
+      </section>
+
+      <section id="same">
+        <h2>5. What stayed the same</h2>
+        {{SAME}}
+      </section>
+
+      <section id="verify">
+        <h2>6. How to verify</h2>
+        {{VERIFY}}
+      </section>
+
+      <footer>
+        Generated from <a href="{{PR_URL}}">{{PR_URL}}</a>
+        at <code>{{SHA}}</code>. Snippets link to that commit.
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

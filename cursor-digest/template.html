@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{TITLE}}</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --canvas: #f6f8fa;
+      --inset: #eaeef2;
+      --border: #d0d7de;
+      --text: #1f2328;
+      --muted: #656d76;
+      --link: #0969da;
+      --accent: #0969da;
+      --done: #1a7f37;
+      --done-bg: #dafbe1;
+      --open: #0969da;
+      --open-bg: #ddf4ff;
+      --danger: #cf222e;
+      --attention: #9a6700;
+      --attention-bg: #fff8c5;
+      --plus: #1a7f37;
+      --minus: #cf222e;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+      --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      font: 16px/1.5 var(--font);
+    }
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap {
+      display: grid;
+      grid-template-columns: 200px minmax(0, 920px);
+      gap: 2rem;
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 24px 24px 80px;
+    }
+    nav {
+      position: sticky;
+      top: 24px;
+      align-self: start;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    nav .label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    nav a {
+      display: block;
+      color: var(--text);
+      padding: 5px 0;
+    }
+    nav a:hover { color: var(--link); }
+    header.hero {
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .kicker {
+      margin: 0 0 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+    }
+    h2 {
+      margin: 36px 0 10px;
+      font-size: 20px;
+      font-weight: 600;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    h3 { margin: 22px 0 8px; font-size: 16px; font-weight: 600; }
+    p { margin: 10px 0; }
+    .lede { color: var(--muted); font-size: 16px; }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .chip {
+      display: inline-block;
+      padding: 1px 8px;
+      border: 1px solid var(--border);
+      border-radius: 2em;
+      background: var(--canvas);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .chip.agent { background: var(--open-bg); border-color: #54aeff; color: var(--open); }
+    .chip.plan { background: var(--attention-bg); border-color: #d4a72c; color: var(--attention); }
+    .chip.chat { background: var(--canvas); }
+    .plus { color: var(--plus); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .minus { color: var(--minus); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .card {
+      background: var(--canvas);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 16px;
+      margin: 12px 0;
+    }
+    .card h3 { margin-top: 0; }
+    .card .when { color: var(--muted); font-size: 12px; }
+    .card .query {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .split3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .split3 .card { margin: 0; }
+    .stat { font-size: 22px; font-weight: 600; letter-spacing: -0.03em; }
+    .stat span { display: block; font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: 0; }
+    table.work {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin: 12px 0;
+    }
+    table.work th, table.work td {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    table.work th { color: var(--muted); font-weight: 600; font-size: 12px; }
+    .note {
+      border-left: 3px solid var(--accent);
+      background: var(--open-bg);
+      padding: 10px 12px;
+      margin: 14px 0;
+      border-radius: 0 6px 6px 0;
+      font-size: 14px;
+    }
+    .note.warn {
+      border-left-color: var(--attention);
+      background: var(--attention-bg);
+    }
+    ul.overview { padding-left: 20px; }
+    ul.overview li { margin: 6px 0; }
+    .links { margin: 8px 0 0; font-size: 13px; }
+    .links a { margin-right: 10px; }
+    code, .path {
+      font-family: var(--mono);
+      font-size: 85%;
+    }
+    p code, li code, td code {
+      background: var(--canvas);
+      border: 1px solid var(--border);
+      padding: 0.1em 0.35em;
+      border-radius: 6px;
+    }
+    footer {
+      margin-top: 48px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    @media (max-width: 860px) {
+      .wrap { grid-template-columns: 1fr; }
+      nav { position: static; }
+      .split3 { grid-template-columns: 1fr; }
+    }
+    @media print {
+      nav { display: none; }
+      .wrap { display: block; max-width: none; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav>
+      <span class="label">On this page</span>
+      <a href="#overview">Overview</a>
+      <a href="#projects">By project</a>
+      <a href="#work">Equivalent work</a>
+      <a href="#gaps">Gaps</a>
+    </nav>
+    <main>
+      <header class="hero">
+        <p class="kicker">Cursor digest</p>
+        <h1>{{TITLE}}</h1>
+        <p class="lede">{{RANGE_LABEL}}</p>
+        <div class="meta">{{STATS_CHIPS}}</div>
+      </header>
+
+      <div class="split3">{{STAT_CARDS}}</div>
+
+      <h2 id="overview">Overview</h2>
+      <!-- DIGEST_SUMMARY_START -->
+      {{SUMMARY}}
+      <!-- DIGEST_SUMMARY_END -->
+
+      <h2 id="projects">By project</h2>
+      {{PROJECT_SECTIONS}}
+
+      <h2 id="work">Equivalent work</h2>
+      {{WORK_SECTIONS}}
+
+      <h2 id="gaps">Gaps</h2>
+      {{GAPS}}
+
+      <footer>
+        Generated {{GENERATED_AT}} · sessions from Cursor composer headers and agent transcripts ·
+        artifacts in <code>~/Projects/cursor-digest-artifacts</code>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>
